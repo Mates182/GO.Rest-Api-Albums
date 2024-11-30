@@ -24,7 +24,7 @@ func main() {
 	router.POST("/albums", postAlbums)          //Add a new album
 	router.PUT("/albums/:id", updateAlbumByID)  //Update an album by ID
 	router.DELETE("/albums/:id", deleteAlbum)   //Delete an album by ID
-	router.PATCH("/albums/:id", patchAlbumByID) //Partialy update an album by ID
+	router.PATCH("/albums/:id", patchAlbumByID) //Partially update an album by ID
 
 	router.Run("localhost:8080")
 }
@@ -107,7 +107,7 @@ func deleteAlbum(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"message": "Album not found"})
 }
 
-// PATCH: Partialy update an album by ID
+// PATCH: Partially update an album by ID
 func patchAlbumByID(c *gin.Context) {
 	id := c.Param("id")
 	var updates map[string]interface{}
