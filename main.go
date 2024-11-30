@@ -30,6 +30,8 @@ type album struct {
 // Album data
 var albums = []album{
 	{ID: "1", Title: "Born to Die", Artist: "Lana del Rey", Year: 2012},
-	{ID: "2", Title: "Born to Die", Artist: "Lana del Rey", Year: 2012},
-	{ID: "3", Title: "Born to Die", Artist: "Lana del Rey", Year: 2012},
+	{ID: "2", Title: "Froot", Artist: "Marina and the Diamonds", Year: 2015},
+	{ID: "3", Title: "I've IVE", Artist: "IVE", Year: 2023},
+	{ID: "4", Title: "Silence Between Songs", Artist: "Madison Beer", Year: 2023},
+	{ID: "5", Title: "2", Artist: "(G)I-DLE)", Year: 2024},
 }
