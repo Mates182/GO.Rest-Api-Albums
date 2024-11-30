@@ -19,11 +19,12 @@ func main() {
 	router.GET("/", handler)
 
 	// RESTful routes
-	router.GET("/albums", getAlbums)           //Get all albums
-	router.GET("albums/:id", getAlbumByID)     //Get album by ID
-	router.POST("/albums", postAlbums)         //Add a new album
-	router.PUT("/albums/:id", updateAlbumByID) //Update an album by ID
-	router.DELETE("/albums/:id", deleteAlbum)  //Delete an album by ID
+	router.GET("/albums", getAlbums)            //Get all albums
+	router.GET("albums/:id", getAlbumByID)      //Get album by ID
+	router.POST("/albums", postAlbums)          //Add a new album
+	router.PUT("/albums/:id", updateAlbumByID)  //Update an album by ID
+	router.DELETE("/albums/:id", deleteAlbum)   //Delete an album by ID
+	router.PATCH("/albums/:id", patchAlbumByID) //Partialy update an album by ID
 
 	router.Run("localhost:8080")
 }
@@ -100,6 +101,33 @@ func deleteAlbum(c *gin.Context) {
 		if a.ID == id {
 			albums = append(albums[:i], albums[i+1:]...)
 			c.JSON(http.StatusOK, albums)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"message": "Album not found"})
+}
+
+// PATCH: Partialy update an album by ID
+func patchAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	var updates map[string]interface{}
+	if err := c.BindJSON(&updates); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	for i, a := range albums {
+		if a.ID == id {
+			if title, ok := updates["title"].(string); ok {
+				albums[i].Title = title
+			}
+			if artist, ok := updates["artist"].(string); ok {
+				albums[i].Artist = artist
+			}
+			if year, ok := updates["year"].(float64); ok {
+				albums[i].Year = int(year)
+			}
+			c.IndentedJSON(http.StatusOK, albums[i])
 			return
 		}
 	}
