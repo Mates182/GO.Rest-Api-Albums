@@ -15,11 +15,14 @@ func handler(c *gin.Context) {
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
-
+	// Index page
 	router.GET("/", handler)
-	router.GET("/albums", getAlbums)
-	router.GET("albums/:id", getAlbumByID)
-	router.POST("/albums", postAlbums)
+
+	// RESTful routes
+	router.GET("/albums", getAlbums)           //Get all albums
+	router.GET("albums/:id", getAlbumByID)     //Get album by ID
+	router.POST("/albums", postAlbums)         //Add a new album
+	router.PUT("/albums/:id", updateAlbumByID) //Update an album by ID
 
 	router.Run("localhost:8080")
 }
@@ -42,11 +45,12 @@ var albums = []album{
 }
 
 // API REST
-// GET Albums
+// GET: Get all Albums
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
+// GET: Get album by ID
 func getAlbumByID(c *gin.Context) {
 	id := c.Param("id")
 
@@ -59,7 +63,7 @@ func getAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Album not found"})
 }
 
-// POST
+// POST: Add a new album
 func postAlbums(c *gin.Context) {
 	var newAlbum album
 	if err := c.BindJSON(&newAlbum); err != nil {
@@ -68,4 +72,22 @@ func postAlbums(c *gin.Context) {
 	}
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, albums)
+}
+
+// PUT: Update album by ID
+func updateAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	var updatedAlbum album
+	if err := c.BindJSON(&updatedAlbum); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	for i, a := range albums {
+		if a.ID == id {
+			albums[i] = updatedAlbum
+			c.IndentedJSON(http.StatusOK, updatedAlbum)
+			return
+		}
+	}
+	c.JSON(http.StatusNotFound, gin.H{"message": "Album not found"})
 }
